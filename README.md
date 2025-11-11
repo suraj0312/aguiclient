@@ -10,7 +10,7 @@ Welcome to the **AGUI Client** — the interactive frontend for AgentHub! This i
 
 Make sure you have Node.js and npm installed on your system.
 
-Navigate to the `agui_client` folder and run:
+Navigate to the `aguiclient` folder and run:
 
 ```bash
 npm install
