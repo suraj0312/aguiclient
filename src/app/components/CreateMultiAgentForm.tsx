@@ -22,91 +22,61 @@ interface CreateMultiAgentFormProps {
   onCancel: () => void;
 }
 
-export default function CreateMultiAgentForm({
+{
   agents,
   onCreate,
   onCancel,
 }: CreateMultiAgentFormProps) {
   const [name, setName] = useState("");
   const [instructions, setInstructions] = useState("");
-  const [selected, setSelected] = useState<string[]>([]);
-  const threadId = useCopilotContext().threadId;
 
-  // const isFormValid = name.trim() !== "" && instructions.trim() !== "" && selected.length > 0;
-
-  // const selectedAgents = agents.filter((a) => selected.includes(a.name + a.url));
-
-  const selectedAgents = agents.filter((a) =>
-    selected.includes(a.name + a.url)
-  );
-
-
-  // Add to existing state declarations:
-  const [selectedLLMType, setSelectedLLMType] = useState<LLMType>("Azure OpenAI");
-  const [llmConfig, setLLMConfig] = useState(DEFAULT_LLM_CONFIGS["Azure OpenAI"]);
-
-  // Add this function to validate LLM config
-  const validateLLMConfig = (config: string): boolean => {
-    try {
-      // Convert config string to key-value pairs
-      const configObj = config.split('\n').reduce((acc, line) => {
-        const [key, value] = line.split('=');
-        if (key && value) {
-          acc[key.trim()] = value.trim();
-        }
-        return acc;
-      }, {} as Record<string, string>);
-
-      return Object.keys(configObj).length > 0;
-    } catch (e) {
-      return false;
+  const handleCreate = () => {
+    // Check if name already exists in agents
+    const isDuplicate = agents.some(agent => agent.name === name);
+    if (isDuplicate) {
+      alert("Agent with given name already exist, use different name.");
+      return;
     }
+
+    // Proceed with agent creation
+    onCreate({
+      name,
+      url: "http://localhost:8083",
+      subAgents: [] /* Assuming subAgents are handled dynamically */,
+      instructions,
+      framework: "",
+      description: "",
+      type: "orchestrator",
+      session_id: "currentSession" /* Replace with appropriate logic */,
+    });
   };
 
-  // Update isFormValid check
-  const isFormValid = name.trim() && instructions.trim() && llmConfig.trim();
-
   return (
-    <div className={styles.Window}>
-      <div className={styles.headerContainer}>
-        <div className={styles.headerContent}>
-          <h2 className={styles.title}>Create Orchestrator</h2>
-        </div>
-        <div className={styles.actions}>
-          <button
-            disabled={!isFormValid}
-            onClick={() => {
-              if (isFormValid) {
-                if (!validateLLMConfig(llmConfig)) {
-                  alert("The LLM Configuration string format is incorrect");
-                  return;
-                }
-
-                const configObj = llmConfig.split('\n').reduce((acc, line) => {
-                  const [key, value] = line.split('=');
-                  if (key && value) {
-                    acc[key.trim()] = value.trim();
-                  }
-                  return acc;
-                }, {} as Record<string, string>);
-
-                onCreate({
-                  name,
-                  url: "http://localhost:8083",
-                  subAgents: selectedAgents,
-                  instructions,
-                  framework: "",
-                  description : "",
-                  type: "orchestrator",
-                  session_id: threadId,
-                  usage: 0,
-                  llmData: {
-                    llmType: selectedLLMType,
-                    llmConfig: configObj
-                  }
-                });
-              }
-            }}
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleCreate();
+      }}
+    >
+      {/* Input fields and UI elements */}
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Enter agent name"
+        required
+      />
+      {/* Additional dynamic elements */}
+      <textarea
+        value={instructions}
+        onChange={(e) => setInstructions(e.target.value)}
+        placeholder="Supervisor instruction for managing multiple agents"
+      />
+      <button type="submit">Create Agent</button>
+      <button type="button" onClick={onCancel}>Cancel</button>
+    </form>
+  );
+}
           >
             Create
           </button>
