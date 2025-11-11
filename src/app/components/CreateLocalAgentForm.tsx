@@ -161,10 +161,21 @@ Understand the user's intent before responding.`);
               value={llmConfig}
               onChange={(e) => setLLMConfig(e.target.value)}
               onBlur={() => {
+                const newConfigKeys = llmConfig.split('
+').map(line => line.split('=')[0]?.trim());
+                const defaultKeys = Object.keys(DEFAULT_LLM_CONFIGS[selectedLLMType]);
+
+                if (newConfigKeys.some(key => !defaultKeys.includes(key))) {
+                  alert("You cannot change the key names. Only edit the values after the equals sign.");
+                  setLLMConfig(DEFAULT_LLM_CONFIGS[selectedLLMType]);
+                  return;
+                }
+
                 if (!validateLLMConfig(llmConfig)) {
                   alert("The LLM Configuration string format is incorrect");
                   setLLMConfig(DEFAULT_LLM_CONFIGS[selectedLLMType]);
                 }
+              }
               }}
               rows={6}
               required
