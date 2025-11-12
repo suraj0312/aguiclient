@@ -64,8 +64,7 @@ export default function CreateMultiAgentForm({
   };
 
   // Update isFormValid check
-  const isExistingAgent = agents.some((agent) => agent.name === name);
-const isFormValid = name.trim() && instructions.trim() && llmConfig.trim() && !isExistingAgent;
+  const isFormValid = name.trim() && instructions.trim() && llmConfig.trim();
 
   return (
     <div className={styles.Window}>
@@ -78,10 +77,6 @@ const isFormValid = name.trim() && instructions.trim() && llmConfig.trim() && !i
             disabled={!isFormValid}
             onClick={() => {
               if (isFormValid) {
-  if (isExistingAgent) {
-    alert('Agent with given name already exist, use different name.');
-    return;
-  }
                 if (!validateLLMConfig(llmConfig)) {
                   alert("The LLM Configuration string format is incorrect");
                   return;
