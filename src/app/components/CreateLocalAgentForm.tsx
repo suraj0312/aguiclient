@@ -50,22 +50,20 @@ Understand the user's intent before responding.`);
   const [llmConfig, setLLMConfig] = useState(DEFAULT_LLM_CONFIGS["Azure OpenAI"]);
 
   // Add this function to validate LLM config
-  const validateLLMConfig = (config: string): boolean => {
-    try {
-      // Convert config string to key-value pairs
-      const configObj = config.split('\n').reduce((acc, line) => {
-        const [key, value] = line.split('=');
-        if (key && value) {
-          acc[key.trim()] = value.trim();
-        }
-        return acc;
-      }, {} as Record<string, string>);
+  const const validateLLMConfig = (newConfig) => {
+  const defaultKeys = ['API_KEY', 'MODEL_NAME'];
+  const lines = newConfig.split('\n');
 
-      return Object.keys(configObj).length > 0;
-    } catch (e) {
+  for (const line of lines) {
+    const [key] = line.split('=');
+    if (!defaultKeys.includes(key.trim())) {
+      alert('You cannot change the key names. Only edit the values after the equals sign.');
       return false;
     }
-  };
+  }
+
+  return true;
+};
 
   // Update isFormValid check
   const isFormValid = name.trim() && instructions.trim() && description.trim() && llmConfig.trim();
