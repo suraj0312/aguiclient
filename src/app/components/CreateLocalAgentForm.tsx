@@ -161,22 +161,10 @@ Understand the user's intent before responding.`);
               value={llmConfig}
               onChange={(e) => setLLMConfig(e.target.value)}
               onBlur={() => {
-                const defaultKeys = Object.keys(DEFAULT_LLM_CONFIGS[selectedLLMType]);
-                // Splitting llmConfig by newlines and extracting keys before the '=' sign
-                const currentKeys = llmConfig.split('
-').map(line => line.split('=')[0].trim());
-
-                // Check if any key has been modified
-                const keysModified = currentKeys.some(key => !defaultKeys.includes(key));
-
-                if (keysModified) {
-                  alert("You cannot change the key names. Only edit the values after the equals sign.");
-                  setLLMConfig(DEFAULT_LLM_CONFIGS[selectedLLMType]);
-                } else if (!validateLLMConfig(llmConfig)) {
+                if (!validateLLMConfig(llmConfig)) {
                   alert("The LLM Configuration string format is incorrect");
                   setLLMConfig(DEFAULT_LLM_CONFIGS[selectedLLMType]);
                 }
-              }}}
               }}
               rows={6}
               required
