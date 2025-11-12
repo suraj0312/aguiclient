@@ -38,21 +38,19 @@ Understand the user's intent before responding.`);
   const [selected, setSelected] = useState<string[]>([]);
   const threadId = useCopilotContext().threadId;
 
-  // const isFormValid = name.trim() && instructions.trim() && description.trim();
-
   const selectedAgents = agents.filter((a) =>
     selected.includes(a.name + a.url)
   );
 
 
-  // Add to existing state declarations:
   const [selectedLLMType, setSelectedLLMType] = useState<LLMType>("Azure OpenAI");
   const [llmConfig, setLLMConfig] = useState(DEFAULT_LLM_CONFIGS["Azure OpenAI"]);
 
-  // Add this function to validate LLM config
   const validateLLMConfig = (config: string): boolean => {
     try {
-      // Convert config string to key-value pairs
+      const currentConfig = DEFAULT_LLM_CONFIGS[selectedLLMType];
+      const currentKeys = new Set(Object.keys(currentConfig));
+
       const configObj = config.split('\n').reduce((acc, line) => {
         const [key, value] = line.split('=');
         if (key && value) {
@@ -61,16 +59,42 @@ Understand the user's intent before responding.`);
         return acc;
       }, {} as Record<string, string>);
 
+      const newKeys = Object.keys(configObj);
+      for (const key of newKeys) {
+        if (!currentKeys.has(key)) {
+          return false;
+        }
+      }
+
       return Object.keys(configObj).length > 0;
     } catch (e) {
       return false;
     }
   };
 
-  // Update isFormValid check
-  const isFormValid = name.trim() && instructions.trim() && description.trim() && llmConfig.trim();
+  const handleBlur = () => {
+    const currentConfig = DEFAULT_LLM_CONFIGS[selectedLLMType];
+    const currentKeys = new Set(Object.keys(currentConfig));
 
-  // Add after other input containers:
+    const configObj = llmConfig.split('\n').reduce((acc, line) => {
+      const [key, value] = line.split('=');
+      if (key && value) {
+        acc[key.trim()] = value.trim();
+      }
+      return acc;
+    }, {} as Record<string, string>);
+
+    const newKeys = Object.keys(configObj);
+    for (const key of newKeys) {
+      if (!currentKeys.has(key)) {
+        alert("You cannot change the key names. Only edit the values after the equals sign.");
+        setLLMConfig(currentConfig); // Reset to default configuration
+        return;
+      }
+    }
+  };
+
+  const isFormValid = name.trim() && instructions.trim() && description.trim() && llmConfig.trim();
 
   return (
     <div className={styles.Window}>
@@ -81,7 +105,6 @@ Understand the user's intent before responding.`);
         <div className={styles.actions}>
           <button
             disabled={!isFormValid}
-            // Update the onClick handler in the Create button
             onClick={() => {
               if (isFormValid) {
                 if (!validateLLMConfig(llmConfig)) {
@@ -117,6 +140,148 @@ Understand the user's intent before responding.`);
             className={styles.primaryButton}
           >
             Create
+          </button>
+          <button
+            onClick={onCancel}
+            className={styles.secondaryButton}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+      <textarea
+        value={llmConfig}
+        onChange={(e) => setLLMConfig(e.target.value)}
+        onBlur={handleBlur}
+        className={styles.llmConfigTextarea}
+        placeholder="LLM Configuration"
+      />
+    </div>
+  );
+}
+            className={styles.primaryButton}
+          >
+            Create
+          </button>
+          <button
+            onClick={onCancel}
+            className={styles.secondaryButton}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+      <textarea
+        value={llmConfig}
+        onChange={(e) => setLLMConfig(e.target.value)}
+        onBlur={handleBlur}
+        className={styles.llmConfigTextarea}
+        placeholder="LLM Configuration"
+      />
+    </div>
+  );
+}
+            className={styles.primaryButton}
+          >
+            Create
+          </button>
+          <button
+            onClick={onCancel}
+            className={styles.secondaryButton}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+      <textarea
+        value={llmConfig}
+        onChange={(e) => setLLMConfig(e.target.value)}
+        onBlur={handleBlur}
+        className={styles.llmConfigTextarea}
+        placeholder="LLM Configuration"
+        />
+    </div>
+  );
+}
+            className={styles.primaryButton}
+          >
+            Create
+          </button>
+          <button className={styles.secondaryButton}>
+            Cancel
+          </button>
+        </div>
+      </div>
+      <textarea
+        value={llmConfig}
+        onChange={(e) => setLLMConfig(e.target.value)}
+        onBlur={handleBlur}
+        className={styles.llmConfigTextarea}
+        placeholder="LLM Configuration"
+      />
+    </div>
+  );
+}
+            <button className={styles.primaryButton}>Create</button>
+          </button>
+          <button onClick={onCancel} className={styles.secondaryButton}>
+            Cancel
+          </button>
+        </div>
+      </div>
+      <textarea
+        value={llmConfig}
+        onChange={(e) => setLLMConfig(e.target.value)}
+        onBlur={handleBlur}
+        className={styles.llmConfigTextarea}
+        placeholder="LLM Configuration"
+      />
+      <div className={styles.separator} />
+      <div className={`${styles.inputSection} ${styles.customScrollbar}`}>
+        <div className={styles.inputs}>
+          <div className={styles.inputContainer}>
+            <label className={styles.label} htmlFor="llm-type">
+              LLM Type
+            </label>
+            <select
+              id="llm-type"
+              className={styles.input}
+              value={selectedLLMType}
+              onChange={(e) => {
+                const newType = e.target.value as LLMType;
+                setSelectedLLMType(newType);
+              }}
+            >
+              {Object.keys(DEFAULT_LLM_CONFIGS).map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+            <button className={styles.primaryButton}>Create</button>
+          </button>
+          <button onClick={onCancel} className={styles.secondaryButton}>
+            Cancel
+          </button>
+        </div>
+      </div>
+      <textarea
+        value={llmConfig}
+        onChange={(e) => setLLMConfig(e.target.value)}
+        onBlur={handleBlur}
+        className={styles.llmConfigTextarea}
+        placeholder="LLM Configuration"
+      />
+    </div>
+  );
+}
+            <button className={styles.primaryButton}>Create</button>
           </button>
           <button onClick={onCancel} className={styles.secondaryButton}>
             Cancel
