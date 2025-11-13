@@ -1,0 +1,193 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`CreateLocalAgentForm matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="Window"
+  >
+    <div
+      class="headerContainer"
+    >
+      <div
+        class="headerContent"
+      >
+        <h2
+          class="title"
+        >
+          Create Local Agent
+        </h2>
+      </div>
+      <div
+        class="actions"
+      >
+        <button
+          class="primaryButton"
+          disabled=""
+        >
+          Create
+        </button>
+        <button
+          class="secondaryButton"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+    <div
+      class="separator"
+    />
+    <div
+      class="inputSection customScrollbar"
+    >
+      <div
+        class="inputs"
+      >
+        <div
+          class="inputContainer"
+        >
+          <label
+            class="label"
+            for="llm-type"
+          >
+            LLM Type
+          </label>
+          <select
+            class="input"
+            id="llm-type"
+            required=""
+          >
+            <option
+              value="Azure OpenAI"
+            >
+              Azure OpenAI
+            </option>
+            <option
+              value="OpenAI"
+            >
+              OpenAI
+            </option>
+            <option
+              value="Gemini"
+            >
+              Gemini
+            </option>
+            <option
+              value="Anthropic"
+            >
+              Anthropic
+            </option>
+          </select>
+        </div>
+        <div
+          class="inputContainer"
+        >
+          <label
+            class="label"
+            for="llm-config"
+          >
+            LLM Configuration
+          </label>
+          <textarea
+            class="textarea"
+            id="llm-config"
+            required=""
+            rows="6"
+          >
+            API_KEY=&lt;your_azure_openai_api_key&gt;
+MODEL_NAME=&lt;model_name&gt;
+ENDPOINT=&lt;your_azure_openai_endpoint&gt;
+API_VERSION=&lt;api_version&gt;
+DEPLOYMENT_NAME=&lt;deployment_name&gt;
+          </textarea>
+        </div>
+        <div
+          class="inputContainer"
+        >
+          <label
+            class="label"
+            for="agent-name"
+          >
+            Local Agent Name
+          </label>
+          <input
+            class="input"
+            id="agent-name"
+            placeholder="e.g. My Local Agent"
+            required=""
+            type="text"
+            value=""
+          />
+        </div>
+        <div
+          class="inputContainer"
+        >
+          <label
+            class="label"
+            for="agent-instructions"
+          >
+            System Instructions
+          </label>
+          <textarea
+            class="textarea"
+            id="agent-instructions"
+            placeholder="Agent instruction to perform tasks."
+            required=""
+            rows="5"
+          >
+            You are an AI agent.
+You can call tools. Use them automatically to answer questions accurately.
+Always reply in clear, human-readable language. Use simple words, short sentences, and clean formatting.
+Understand the user's intent before responding.
+          </textarea>
+        </div>
+        <div
+          class="inputContainer"
+        >
+          <label
+            class="label"
+            for="agent-description"
+          >
+            Agent Description
+          </label>
+          <textarea
+            class="textarea"
+            id="agent-description"
+            placeholder="Agent description."
+            required=""
+            rows="5"
+          />
+        </div>
+        <div
+          class="inputContainer"
+        >
+          <label
+            class="label"
+          >
+            Select MCPs
+          </label>
+          <div
+            class="tableContainer"
+          >
+            <div
+              data-testid="ag-grid-table"
+            >
+              <label>
+                <input
+                  type="checkbox"
+                />
+                Agent1
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                />
+                Agent3
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
