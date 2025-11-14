@@ -90,7 +90,11 @@ export default function CreateMultiAgentForm({
                   return acc;
                 }, {} as Record<string, string>);
 
-                onCreate({
+                if (agents.some(agent => agent.name === name)) {
+alert('Orchestrator with the given name already exists. Please use a different name.');
+return;
+}
+onCreate({
                   name,
                   url: "http://localhost:8083",
                   subAgents: selectedAgents,
