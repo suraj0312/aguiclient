@@ -30,83 +30,59 @@ export default function CreateMultiAgentForm({
   const [name, setName] = useState("");
   const [instructions, setInstructions] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null); // New state
   const threadId = useCopilotContext().threadId;
 
-  // const isFormValid = name.trim() !== "" && instructions.trim() !== "" && selected.length > 0;
-
-  // const selectedAgents = agents.filter((a) => selected.includes(a.name + a.url));
-
-  const selectedAgents = agents.filter((a) =>
-    selected.includes(a.name + a.url)
-  );
-
-
-  // Add to existing state declarations:
-  const [selectedLLMType, setSelectedLLMType] = useState<LLMType>("Azure OpenAI");
-  const [llmConfig, setLLMConfig] = useState(DEFAULT_LLM_CONFIGS["Azure OpenAI"]);
-
-  // Add this function to validate LLM config
-  const validateLLMConfig = (config: string): boolean => {
-    try {
-      // Convert config string to key-value pairs
-      const configObj = config.split('\n').reduce((acc, line) => {
-        const [key, value] = line.split('=');
-        if (key && value) {
-          acc[key.trim()] = value.trim();
-        }
-        return acc;
-      }, {} as Record<string, string>);
-
-      return Object.keys(configObj).length > 0;
-    } catch (e) {
-      return false;
+  const handleCreate = () => {
+    // Check for duplicates
+    if (agents.some((agent) => agent.name === name.trim())) {
+      setError("Orchestrator with the given name already exists. Please use a different name.");
+      return;
     }
+
+    setError(null); // Clear any previous error
+
+    const selectedAgents = agents.filter((a) =>
+      selected.includes(a.name + a.url)
+    );
+
+    onCreate({
+      name: name.trim(),
+      url: "", // Add appropriate URL or input
+      subAgents: selectedAgents,
+      instructions: instructions.trim(),
+      framework: "", // Define as needed
+      description: "", // Define as needed
+      type: "multi-agent",
+      session_id: threadId,
+      usage: 0, // Initialize as needed
+    });
   };
 
-  // Update isFormValid check
-  const isFormValid = name.trim() && instructions.trim() && llmConfig.trim();
-
   return (
-    <div className={styles.Window}>
-      <div className={styles.headerContainer}>
-        <div className={styles.headerContent}>
-          <h2 className={styles.title}>Create Orchestrator</h2>
-        </div>
-        <div className={styles.actions}>
-          <button
-            disabled={!isFormValid}
-            onClick={() => {
-              if (isFormValid) {
-                if (!validateLLMConfig(llmConfig)) {
-                  alert("The LLM Configuration string format is incorrect");
-                  return;
-                }
-
-                const configObj = llmConfig.split('\n').reduce((acc, line) => {
-                  const [key, value] = line.split('=');
-                  if (key && value) {
-                    acc[key.trim()] = value.trim();
-                  }
-                  return acc;
-                }, {} as Record<string, string>);
-
-                onCreate({
-                  name,
-                  url: "http://localhost:8083",
-                  subAgents: selectedAgents,
-                  instructions,
-                  framework: "",
-                  description : "",
-                  type: "orchestrator",
-                  session_id: threadId,
-                  usage: 0,
-                  llmData: {
-                    llmType: selectedLLMType,
-                    llmConfig: configObj
-                  }
-                });
-              }
-            }}
+    <form className={styles.form}>
+      {error && <div className={styles.error}>{error}</div>}
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Enter orchestrator name"
+      />
+      <textarea
+        value={instructions}
+        onChange={(e) => setInstructions(e.target.value)}
+        placeholder="Enter instructions"
+      />
+      {/* Add more inputs as needed */}
+      <button type="button" onClick={handleCreate}>
+        Create Orchestrator
+      </button>
+      <button type="button" onClick={onCancel}>
+        Cancel
+      </button>
+    </form>
+  );
+}
           >
             Create
           </button>
