@@ -19,7 +19,14 @@ interface CreateLocalAgentFormProps {
     session_id: string;
     usage: number;
     llmData?: Record<string, any>;
-  }) => void;
+  }) => {
+    const existingAgent = agents.find((a) => a.name === agent.name);
+    if (existingAgent) {
+      alert("A local agent with this name already exists. Please choose a different name.");
+      return;
+    }
+    // Original onCreate code goes here
+  };
   onCancel: () => void;
 }
 
