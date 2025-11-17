@@ -87,15 +87,22 @@ Understand the user's intent before responding.`);
                 if (!validateLLMConfig(llmConfig)) {
                   alert("The LLM Configuration string format is incorrect");
                   return;
-                }
+                };
 
-                const configObj = llmConfig.split('\n').reduce((acc, line) => {
+               const configObj = llmConfig.split('\n').reduce((acc, line) => {
                   const [key, value] = line.split('=');
                   if (key && value) {
                     acc[key.trim()] = value.trim();
                   }
                   return acc;
                 }, {} as Record<string, string>);
+
+                // New validation for agent duplication
+                const isDuplicate = agents.some(agent => agent.name === name.trim());
+                if (isDuplicate) {
+                  alert("A local agent with this name already exists. Please choose a different name.");
+                  return;
+                }
 
                 onCreate({
                   name,
@@ -113,7 +120,7 @@ Understand the user's intent before responding.`);
                   }
                 });
               }
-            }}
+            }}></button>
             className={styles.primaryButton}
           >
             Create
