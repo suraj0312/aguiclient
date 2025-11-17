@@ -236,7 +236,7 @@ describe('CreateLocalAgentForm', () => {
     expect(llmConfigTextarea.value).toBe('API_KEY=valid_key\nANOTHER_KEY=another_value');
   });
 
-  it('calls onCreate with correct data when form is valid and submitted', async () => {
+  it('calls onCreate with correct data when form is valid and submitted (with duplicate validation)', async () => {
     render(
       <CreateLocalAgentForm
         agents={mockAgents}
@@ -245,9 +245,51 @@ describe('CreateLocalAgentForm', () => {
       />
     );
 
+    // Attempt to create a duplicate agent
+    fireEvent.change(screen.getByLabelText('Local Agent Name'), {
+      target: { value: 'Agent2' },
+    });
+
+    fireEvent.change(screen.getByLabelText('System Instructions'), {
+      target: { value: 'Duplicate instructions.' },
+    });
+    fireEvent.change(screen.getByLabelText('Agent Description'), {
+      target: { value: 'Duplicate description.' },
+    });
+    fireEvent.change(screen.getByLabelText('LLM Configuration'), {
+      target: { value: 'API_KEY=duplicate_key' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+
+    expect(window.alert).toHaveBeenCalledWith('A local agent with this name already exists. Please choose a different name.');
+    expect(mockOnCreate).not.toHaveBeenCalled();
+
+    // Attempt for a fresh Create
     fireEvent.change(screen.getByLabelText('Local Agent Name'), {
       target: { value: 'Submit Agent' },
     });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+
+    await waitFor(() => {
+      expect(mockOnCreate).toHaveBeenCalledWith({
+        name: 'Submit Agent',
+        url: '',
+        subAgents: [],
+        instructions: 'Duplicate instructions.',
+        framework: '',
+        description: 'Duplicate description.',
+        type: 'local_agent',
+        session_id: 'test-thread-id',
+        usage: 0,
+        llmData: {
+          llmType: 'Azure OpenAI',
+          llmConfig: { API_KEY: 'duplicate_key' },
+        },
+      });
+    });
+  });
     fireEvent.change(screen.getByLabelText('System Instructions'), {
       target: { value: 'Submit instructions.' },
     });
