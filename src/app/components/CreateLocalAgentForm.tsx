@@ -182,13 +182,7 @@ Understand the user's intent before responding.`);
               placeholder="e.g. My Local Agent"
               value={name}
               onChange={(e) => {
-                const newName = e.target.value;
-                const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\|,.<>/?]+/;
-                if (specialCharRegex.test(newName)) {
-                  window.alert("Local agent name cannot have special characters in name");
-                } else {
-                  setName(newName);
-                }
+                  setName(e.target.value)
               }}
               required
             />
